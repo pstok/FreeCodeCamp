@@ -12,6 +12,22 @@ var _ = require('lodash'),
     path = require('path'),
     passportProviders = require('./passport-providers');
 
+// polyfill for webpack bundle splitting
+const requireProto = Object.getPrototypeOf(require);
+if (!requireProto.hasOwnProperty('ensure')) {
+  Object.defineProperties(
+    requireProto,
+    {
+      'ensure': {
+        value: function ensure(modules, callback) {
+          callback(this);
+        },
+        writable: false,
+        enumarble: false
+      }
+    }
+  );
+}
 var setProfileFromGithub = require('./utils/auth').setProfileFromGithub;
 var getSocialProvider = require('./utils/auth').getSocialProvider;
 var getUsernameFromProvider = require('./utils/auth').getUsernameFromProvider;
